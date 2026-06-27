@@ -1,4 +1,5 @@
 pub fn to_url(s: &str) -> String {
+    s.replace(" ", "%20").to_string()
 }
 
 #[cfg(test)]
@@ -7,7 +8,8 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+        let s = "Hello, world!";
+        println!("'{}' parsed as an URL becomes '{}'", s, to_url(s));
+        assert_eq!(to_url(s), "Hello,%20world!".to_string());
     }
 }
