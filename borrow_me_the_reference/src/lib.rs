@@ -1,20 +1,17 @@
 pub fn delete_and_backspace(s: &mut String) {
-    let mut i = 0;
-    let mut chs : Vec<char> = s.chars().collect();
-    while i < chs.len() {
-        if chs[i] == '+' {
-            if !chs[i+1].is_alphanumeric() {i = i + 1; continue;}
-            chs.remove(i);
-            chs.remove(i);
-            i = i - 2;
-        } else if chs[i] == '-' {
-            chs.remove(i-1);
-            chs.remove(i-1);
-            i = i - 2;
+    let mut res = String::new();
+    let mut p = 0;
+    for c in s.chars() {
+        if c == '+' {
+            p = p + 1;
+        } else if c == '-' {
+            res.pop();
+        } else {
+            if p > 0 {p = p - 1; continue;}
+            res.push(c);
         }
-        i = i + 1;
     }
-    *s = chs.iter().collect();
+    *s = res;
 }
 
 pub fn do_operations(v: &mut [String]) {
