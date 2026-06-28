@@ -17,11 +17,22 @@ pub fn capitalize_first(input: &str) -> String {
 }
 
 pub fn title_case(input: &str) -> String {
-    input
-    .split(" ")
-    .map(|st| capitalize_first(&st))
-    .collect::<Vec<_>>()
-    .join(" ")
+    let mut res = String::new();
+    let mut nw = true;
+
+    for c in input.chars() {
+        if c.is_whitespace() {
+            res.push(c);
+            nw = true;
+        } else if nw {
+            res.push(c.to_ascii_uppercase());
+            nw = false;
+        } else {
+            res.push(c);
+        }
+    }
+
+    res
 }
 
 pub fn change_case(input: &str) -> String {
