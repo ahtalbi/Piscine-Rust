@@ -4,58 +4,88 @@ use rand::Rng;
 pub enum Suit {
     Heart,
     Diamond,
-    Spade,
     Club,
+    Spade,
 }
 
 #[derive(Debug)]
 pub enum Rank {
-    Ace,
-    Number(u8),
+    Two,
+    Three,
+    Four,
+    Five,
+    Six,
+    Seven,
+    Eight,
+    Nine,
+    Ten,
     Jack,
     Queen,
     King,
+    Ace,
 }
 
 impl Suit {
     pub fn random() -> Suit {
-        match rand::thread_rng().gen_range(1..=4) {
-            1 => Suit::Heart,
-            2 => Suit::Diamond,
-            3 => Suit::Spade,
-            _ => Suit::Club,
+        match rand::thread_rng().gen_range(0..4){
+            0=> return Suit::Heart,
+            1=> return Suit::Diamond,
+            2=> return Suit::Club,
+            3=> return Suit::Spade,
+            _ => Suit::Spade,
         }
     }
 
     pub fn translate(value: u8) -> Suit {
-        match value {
-            1 => Suit::Heart,
-            2 => Suit::Diamond,
-            3 => Suit::Spade,
-            _ => Suit::Club,
+        match value{
+            0=> return Suit::Heart,
+            1=> return Suit::Diamond,
+            2=> return Suit::Club,
+            3=> return Suit::Spade,
+            _ => Suit::Spade,
         }
     }
 }
 
 impl Rank {
     pub fn random() -> Rank {
-        match rand::thread_rng().gen_range(1..=13) {
-            1 => Rank::Ace,
-            11 => Rank::Jack,
-            12 => Rank::Queen,
-            13 => Rank::King,
-            n => Rank::Number(n),
+        match rand::thread_rng().gen_range(0..4){
+            0=> return Rank::Ace,
+            1=> return Rank::Two,
+            2=> return Rank::Three,
+            3=> return Rank::Four,
+            4=> return Rank::Five,
+            5=> return Rank::Six,
+            6=> return Rank::Seven,
+            7=> return Rank::Eight,
+            8=> return Rank::Nine,
+            9=> return Rank::Ten,
+            10=> return Rank::Jack,
+            11=> return Rank::Queen,
+            12=> return Rank::King,
+            _=> return Rank::Ace,
         }
+        
     }
 
     pub fn translate(value: u8) -> Rank {
-        match value {
-            1 => Rank::Ace,
-            11 => Rank::Jack,
-            12 => Rank::Queen,
-            13 => Rank::King,
-            n => Rank::Number(n),
+        match value{
+            0=> return Rank::Ace,
+            1=> return Rank::Two,
+            2=> return Rank::Three,
+            3=> return Rank::Four,
+            4=> return Rank::Five,
+            5=> return Rank::Six,
+            6=> return Rank::Seven,
+            7=> return Rank::Eight,
+            8=> return Rank::Nine,
+            9=> return Rank::Ten,
+            10=> return Rank::Jack,
+            11=> return Rank::Queen,
+            12=> return Rank::King,
+            _ => return Rank::Ace,
         }
+
     }
 }
 
