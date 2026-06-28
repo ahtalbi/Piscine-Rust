@@ -20,7 +20,7 @@ impl Circle {
         std::f64::consts::PI * self.radius * self.radius
     }
 
-    pub fn intersect(&self, circle: &Circle) -> bool {
+    pub fn intersect(&self, circle: Circle) -> bool {
         let dis = self.center.distance(circle.center);
         dis <= self.radius + circle.radius
     }
@@ -58,7 +58,7 @@ mod tests {
         
         println!(
             "circle and circle1 intersect = {}",
-            circle.intersect(&circle1)
+            circle.intersect(circle1)
         );
 
         println!(
