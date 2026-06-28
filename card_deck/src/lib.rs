@@ -1,6 +1,6 @@
 use rand::Rng;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Suit {
     Heart,
     Diamond,
@@ -8,7 +8,7 @@ pub enum Suit {
     Spade,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Rank {
     Two,
     Three,
