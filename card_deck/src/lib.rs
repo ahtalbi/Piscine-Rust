@@ -1,3 +1,5 @@
+use rand::Rng;
+
 #[derive(Debug)]
 pub enum Suit {
     Heart,
@@ -9,9 +11,10 @@ pub enum Suit {
 #[derive(Debug)]
 pub enum Rank {
     Ace,
-    King,
-    Queen,
+    Number(u8),
     Jack,
+    Queen,
+    King,
 }
 
 impl Suit {
@@ -36,20 +39,22 @@ impl Suit {
 
 impl Rank {
     pub fn random() -> Rank {
-        match rand::random_range(1..=4) {
+        match rand::random_range(1..=13) {
             1 => Rank::Ace,
-            2 => Rank::King,
-            3 => Rank::Queen,
-            _ => Rank::Jack,
+            11 => Rank::Jack,
+            12 => Rank::Queen,
+            13 => Rank::King,
+            n => Rank::Number(n),
         }
     }
 
     pub fn translate(value: u8) -> Rank {
         match value {
             1 => Rank::Ace,
-            2 => Rank::King,
-            3 => Rank::Queen,
-            _ => Rank::Jack,
+            11 => Rank::Jack,
+            12 => Rank::Queen,
+            13 => Rank::King,
+            n => Rank::Number(n),
         }
     }
 }
