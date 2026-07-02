@@ -13,7 +13,8 @@ pub fn cipher(original: &str, ciphered: &str) -> Result<(), CipherError> {
         }
 
         let b = if c.is_ascii_uppercase() { b'A' } else { b'a' };
-        let s = ((c as u8 - b + 13) % 26) + b;
+
+        let s = b + (25 - (c as u8 - b));
 
         let c = if c.is_ascii_uppercase() {
             (s as char).to_ascii_uppercase()
