@@ -2,8 +2,8 @@ mod err;
 
 pub use err::{ParseErr, ReadErr};
 
+use json;
 use std::{error::Error, fs};
-use json::JsonValue;
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct Task {
@@ -20,32 +20,27 @@ pub struct TodoList {
 
 impl TodoList {
     pub fn get_todo(path: &str) -> Result<TodoList, Box<dyn Error>> {
-        let content = fs::read_to_string(path)
-            .map_err(|e| ReadErr {
-                child_err: Box::new(e),
-            })?;
+        let todos = fs::read_to_string(path).map_err(|err| ReadErr {
+            child_err: Box::new(err),
+        })?;
 
-        let data = json::parse(&content)
-            .map_err(|e| ParseErr::Malformed(Box::new(e)))?;
-
-        let title = data["title"]
-            .as_str()
-            .unwrap_or("")
-            .to_string();
-
-        let tasks_json = &data["tasks"];
-
-        if !tasks_json.is_array() || tasks_json.len() == 0 {
-            return Err(Box::new(ParseErr::Empty));
+        let prsd_tds = json::parse(&todos).map_err(|err| ParseErr::Malformed(Box::new(err)))?;
+        if prsd_tds["tasks"].is_empty() {
+            return Err(ParseErr::Empty.into());
         }
 
-        let mut tasks = Vec::new();
+        let title = prsd_tds["title"].to_string();
+        let mut tasks = vec![];
 
-        for t in tasks_json.members() {
+        for task in prsd_tds["tasks"].members() {
+            let id = task["id"].as_u32().unwrap();
+            let description = task["description"].to_string();
+            let level = task["level"].as_u32().unwrap();
+
             tasks.push(Task {
-                id: t["id"].as_u32().unwrap_or(0),
-                description: t["description"].as_str().unwrap_or("").to_string(),
-                level: t["level"].as_u32().unwrap_or(0),
+                id,
+                description,
+                level,
             });
         }
 
