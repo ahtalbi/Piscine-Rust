@@ -34,7 +34,7 @@ impl FlagsHandler {
         let a = argv.get(1).ok_or("invalid float literal")?;
         let b = argv.get(2).ok_or("invalid float literal")?;
 
-        Ok(func(a, b))
+        func(a, b).map_err(|e| e.to_string())
     }
 }
 
