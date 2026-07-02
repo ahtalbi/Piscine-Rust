@@ -16,7 +16,7 @@ pub fn fetch_data(server : Result<&str, &str>, security_level: Security) -> Stri
                 Ok(url) => {
                     return url.to_string();
                 },
-                Err(e) => {
+                Err(_) => {
                     panic!("ERROR: program stops");
                 },
             }
@@ -26,7 +26,7 @@ pub fn fetch_data(server : Result<&str, &str>, security_level: Security) -> Stri
                 Ok(url) => {
                     return url.to_string();
                 },
-                Err(e) => {
+                Err(_) => {
                     return "WARNING: check the server".to_string();
                 },
             }
