@@ -4,35 +4,31 @@ pub struct CipherError {
 }
 
 pub fn cipher(original: &str, ciphered: &str) -> Result<(), CipherError> {
-    let mut res: String = String::new();
-    
-    let a: u8 = b'a';
-    let z: u8 = b'z';
+    let mut r = String::new();
 
     for c in original.chars() {
-        if !c.is_ascii() || !(a..=z).contains(&(c.to_ascii_lowercase() as u8)) {
-            res.push(c);
+        if !c.is_ascii_alphabetic() {
+            r.push(c);
             continue;
         }
 
-        let mut r = c;
+        let b = if c.is_ascii_uppercase() { b'A' } else { b'a' };
+        let s = ((c as u8 - b + 13) % 26) + b;
 
-        if c.is_ascii_lowercase() {
-            let s = ((c as u8 - a + 13) % 26) + a;
-            r = s as char;
-        } else if c.is_ascii_uppercase() {
-            let s = ((c.to_ascii_lowercase() as u8 - a + 13) % 26) + a;
-            r = (s as char).to_ascii_uppercase();
-        }
+        let c = if c.is_ascii_uppercase() {
+            (s as char).to_ascii_uppercase()
+        } else {
+            s as char
+        };
 
-        res.push(r);
+        r.push(c);
     }
 
-    if ciphered.to_string() != res {
-        return Err(CipherError { expected: res });
+    if r == ciphered {
+        Ok(())
+    } else {
+        Err(CipherError { expected: r })
     }
-
-    Ok(())
 }
 
 #[cfg(test)]
