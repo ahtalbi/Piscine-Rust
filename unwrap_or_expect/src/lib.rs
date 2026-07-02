@@ -44,10 +44,10 @@ pub fn fetch_data(server : Result<&str, &str>, security_level: Security) -> Stri
         Security::UnexpectedUrl => {
             match server {
                 Ok(url) => {
-                    panic!("{}", e);
+                    panic!("{}", url);
                 },
                 Err(e) => {
-                    return url.to_string();
+                    return e.to_string();
                 },
             }
         }
