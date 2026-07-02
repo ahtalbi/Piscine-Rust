@@ -24,8 +24,8 @@ pub struct FlagsHandler {
 
 impl FlagsHandler {
     pub fn add_flag(&mut self, flag: Flag, func: Callback) {
-        self.flags.insert(flag.long_hand.clone(), func);
-        self.flags.insert(flag.short_hand.clone(), func);
+        self.flags.insert(flag.short_hand, func);
+        self.flags.insert(flag.long_hand, func);
     }
     
     pub fn exec_func(&self, input: &str, argv: &[&str]) -> Result<String, String> {
