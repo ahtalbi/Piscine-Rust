@@ -31,10 +31,10 @@ impl FlagsHandler {
     pub fn exec_func(&self, _input: &str, argv: &[&str]) -> Result<String, String> {
         let func = self.flags.get(_input).ok_or("Unknown flag")?;
 
-        let a = argv.get(1).ok_or("Missing arg 1")?;
-        let b = argv.get(2).ok_or("Missing arg 2")?;
+        let a = argv.get(1).ok_or("invalid float literal")?;
+        let b = argv.get(2).ok_or("invalid float literal")?;
 
-        func(a, b).map_err(|e| e.to_string())
+        Ok(func(a, b))
     }
 }
 
