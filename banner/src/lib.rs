@@ -28,13 +28,13 @@ impl FlagsHandler {
         self.flags.insert(flag.short_hand.clone(), func);
     }
     
-    pub fn exec_func(&self, _input: &str, argv: &[&str]) -> Result<String, String> {
-        let func = self.flags.get(_input).ok_or("invalid float literal")?;
-
-        let a = argv.get(0).ok_or("invalid float literal")?;
-        let b = argv.get(1).ok_or("invalid float literal")?;
-
-        func(a, b).map_err(|e| e.to_string())
+    pub fn exec_func(&self, input: &str, argv: &[&str]) -> Result<String, String> {
+        let func=self.flags.get(input).unwrap();
+        let result= func(argv[0], argv[1]);
+        match result {
+            Ok(r)=> return Ok(r),
+            Err(e)=> return Err(e.to_string()),
+        }
     }
 }
 
