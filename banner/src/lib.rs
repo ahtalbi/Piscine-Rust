@@ -2,9 +2,9 @@ use core::f64;
 use std::{collections::HashMap, num::ParseFloatError};
 
 pub struct Flag {
-    pub short_hand: String,
-    pub long_hand: String,
-    pub desc: String,
+    short_hand: String,
+    long_hand: String,
+    desc: String,
 }
 
 impl Flag {
