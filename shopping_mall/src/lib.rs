@@ -10,15 +10,15 @@ pub use mall::{
     Employee,
 };
 
-pub fn biggest_store(mall: &Mall) -> Option<&Store> {
+pub fn biggest_store(mall: &Mall) -> Option<(&String, &Store)> {
     let mut best = None;
     let mut max = 0;
 
     for floor in mall.floors.values() {
-        for store in floor.stores.values() {
+        for (name, store) in floor.stores.iter() {
             if store.square_meters > max {
                 max = store.square_meters;
-                best = Some(store);
+                best = Some((name, store));
             }
         }
     }
@@ -26,7 +26,7 @@ pub fn biggest_store(mall: &Mall) -> Option<&Store> {
     best
 }
 
-pub fn highest_paid_employee(mall: &Mall) -> Vec<&Employee> {
+pub fn highest_paid_employee(mall: &Mall) -> Vec<(&String, &Employee)> {
     let mut max = 0.0;
 
     for floor in mall.floors.values() {
@@ -43,10 +43,24 @@ pub fn highest_paid_employee(mall: &Mall) -> Vec<&Employee> {
 
     for floor in mall.floors.values() {
         for store in floor.stores.values() {
-            for emp in store.employees.values() {
+            for (name, emp) in store.employees.iter() {
                 if (emp.salary - max).abs() < 0.00001 {
-                    res.push(emp);
+                    res.push((name, emp));
                 }
+            }
+        }
+    }
+
+    res
+}
+
+pub fn employees(mall: &mut Mall) -> HashMap<String, &mut Employee> {
+    let mut res = HashMap::new();
+
+    for floor in mall.floors.values_mut() {
+        for store in floor.stores.values_mut() {
+            for (name, emp) in store.employees.iter_mut() {
+                res.insert(name.clone(), emp);
             }
         }
     }
