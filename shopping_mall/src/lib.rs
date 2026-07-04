@@ -65,23 +65,23 @@ pub fn nbr_of_employees(mall: &Mall) -> usize {
 
     count
 }
-
 pub fn check_for_securities(mall: &mut Mall, guards: HashMap<String, Guard>) {
-    let mut total_area: u64 = 0;
+    let mut total = 0;
 
-    for floor in mall.floors.clone() {
-        total_area += floor.1.size_limit;
+    for floor in mall.floors.values() {
+        total += floor.size_limit;
     }
-    
-    let required_guards = (total_area / 200) as usize;
 
-    let current_guards = mall.guards.len();
+    let needed = (total / 200) as usize;
 
-    if current_guards < required_guards {
-        let add_guard = required_guards - current_guards;
-        for (name, guard) in guards.into_iter().take(add_guard) {
-            mall.hire_guard(name, guard);
+    let mut guards = guards; // make mutable ownership
+
+    for (name, guard) in guards.drain() {
+        if mall.guards.len() >= needed {
+            break;
         }
+
+        mall.hire_guard(name, guard);
     }
 }
 
