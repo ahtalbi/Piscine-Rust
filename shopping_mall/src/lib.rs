@@ -85,12 +85,12 @@ pub fn cut_or_raise(mall: &mut Mall) {
     for floor in mall.floors.values_mut() {
         for store in floor.stores.values_mut() {
             for employee in store.employees.values_mut() {
-                let hours = employee.working_hours.1 - employee.working_hours.0;
+                let working_hours = employee.working_hours.1 - employee.working_hours.0;
 
-                if hours >= 10 {
-                    employee.salary *= 1.10;
+                if working_hours >= 10 {
+                    employee.raise(employee.salary * 0.1);
                 } else {
-                    employee.salary *= 0.90;
+                    employee.cut(employee.salary * 0.1);
                 }
             }
         }
