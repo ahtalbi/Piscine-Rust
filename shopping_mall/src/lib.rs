@@ -2,28 +2,24 @@ use std::collections::HashMap;
 
 mod mall;
 
-pub use mall::{
-    Mall,
-    Guard,
-    Floor,
-    Store,
-    Employee,
-};
+pub use mall::{Mall, Guard, Floor, Store, Employee};
 
-pub fn biggest_store(mall: &Mall) -> Option<(&String, &Store)> {
-    let mut best = None;
-    let mut max = 0;
+pub fn biggest_store(mall: &Mall) -> (String, Store) {
+    let mut best: Option<(String, Store)> = None;
 
     for floor in mall.floors.values() {
-        for (name, store) in floor.stores.iter() {
-            if store.square_meters > max {
-                max = store.square_meters;
-                best = Some((name, store));
+        for (name, store) in &floor.stores {
+            match &best {
+                None => best = Some((name.clone(), store.clone())),
+                Some((_, b)) if store.square_meters > b.square_meters => {
+                    best = Some((name.clone(), store.clone()));
+                }
+                _ => {}
             }
         }
     }
 
-    best
+    best.unwrap()
 }
 
 pub fn highest_paid_employee(mall: &Mall) -> Vec<(&String, &Employee)> {
@@ -42,25 +38,11 @@ pub fn highest_paid_employee(mall: &Mall) -> Vec<(&String, &Employee)> {
     let mut res = Vec::new();
 
     for floor in mall.floors.values() {
-        for store in floor.stores.values() {
-            for (name, emp) in store.employees.iter() {
+        for store in &floor.stores {
+            for (name, emp) in &store.1.employees {
                 if (emp.salary - max).abs() < 0.00001 {
                     res.push((name, emp));
                 }
-            }
-        }
-    }
-
-    res
-}
-
-pub fn employees(mall: &mut Mall) -> HashMap<String, &mut Employee> {
-    let mut res = HashMap::new();
-
-    for floor in mall.floors.values_mut() {
-        for store in floor.stores.values_mut() {
-            for (name, emp) in store.employees.iter_mut() {
-                res.insert(name.clone(), emp);
             }
         }
     }
@@ -95,7 +77,6 @@ pub fn check_for_securities(mall: &mut Mall, guards: HashMap<String, Guard>) {
         if mall.guards.len() >= needed {
             break;
         }
-
         mall.hire_guard(name, guard);
     }
 }
@@ -233,6 +214,111 @@ mod tests {
                                         },
                                     ),
                                     (
+                                        "Tyler Hunt",
+                                        Employee {
+                                            age: 63,
+                                            working_hours: (13, 20),
+                                            salary: 668.25,
+                                        },
+                                    ),
+                                    (
+                                        "Mohsin Mcgee",
+                                        Employee {
+                                            age: 30,
+                                            working_hours: (19, 24),
+                                            salary: 703.83,
+                                        },
+                                    ),
+                                    (
+                                        "Antoine Goulding",
+                                        Employee {
+                                            age: 45,
+                                            working_hours: (19, 24),
+                                            salary: 697.12,
+                                        },
+                                    ),
+                                    (
+                                        "Mark Barnard",
+                                        Employee {
+                                            age: 53,
+                                            working_hours: (19, 24),
+                                            salary: 788.81,
+                                        },
+                                    ),
+                                ]
+                                .into(),
+                                950,
+                            ),
+                        )]
+                        .into(),
+                        1000,
+                    ),
+                ),
+            ]
+            .into(),
+        );
+
+        // returns the biggest store
+        println!("Biggest store: {:#?}", biggest_store(&mall));
+
+        // returns the list with the highest paid employees
+        println!("Highest paid employee: {:#?}", highest_paid_employee(&mall));
+
+        // returns the number of employees
+        println!("Number of employees: {}", nbr_of_employees(&mall));
+
+        // checks if it is needed to add securities
+        check_for_securities(
+            &mut mall,
+            [
+                (
+                    "Peter Solomons",
+                    Guard {
+                        age: 45,
+                        years_experience: 20,
+                    },
+                ),
+                (
+                    "William Charles",
+                    Guard {
+                        age: 32,
+                        years_experience: 10,
+                    },
+                ),
+                (
+                    "Leonardo Changretta",
+                    Guard {
+                        age: 23,
+                        years_experience: 0,
+                    },
+                ),
+                (
+                    "Vlad Levi",
+                    Guard {
+                        age: 38,
+                        years_experience: 8,
+                    },
+                ),
+                (
+                    "Faruk Berkai",
+                    Guard {
+                        age: 40,
+                        years_experience: 15,
+                    },
+                ),
+                (
+                    "Christopher Smith",
+                    Guard {
+                        age: 35,
+                        years_experience: 9,
+                    },
+                ),
+                (
+                    "Jason Mackie",
+                    Guard {
+                        age: 26,
+                        years_experience: 2,
+                    },
                                         "Tyler Hunt",
                                         Employee {
                                             age: 63,
