@@ -1,12 +1,12 @@
 use json::{object, JsonValue};
 
 pub struct Food {
-    name: String,
-    calories: (String, String),
-    fats: f64,
-    carbs: f64,
-    proteins: f64,
-    nbr_of_portions: f64
+    pub name: String,
+    pub calories: (String, String),
+    pub fats: f64,
+    pub carbs: f64,
+    pub proteins: f64,
+    pub nbr_of_portions: f64
 }
 
 pub fn calculate_macros(foods: &[Food]) -> JsonValue {
