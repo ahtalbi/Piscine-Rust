@@ -7,8 +7,8 @@ pub use mall::{Mall, Guard, Floor, Store, Employee};
 pub fn biggest_store(mall: &Mall) -> (String, Store) {
     let mut best: Option<(String, Store)> = None;
 
-    for floor in mall.floors.values() {
-        for (name, store) in &floor.stores {
+    for floor in &mall.floors {
+        for (name, store) in &floor.1.stores {
             match &best {
                 None => best = Some((name.clone(), store.clone())),
                 Some((_, b)) if store.square_meters > b.square_meters => {
@@ -25,48 +25,48 @@ pub fn biggest_store(mall: &Mall) -> (String, Store) {
 pub fn highest_paid_employee(mall: &Mall) -> Vec<(&String, &Employee)> {
     let mut max = 0.0;
 
-    for floor in mall.floors.values() {
-        for store in floor.stores.values() {
-            for emp in store.employees.values() {
-                if emp.salary > max {
-                    max = emp.salary;
+    for floor in &mall.floors {
+        for store in &floor.1.stores {
+            for employee in &store.1.employees {
+                if employee.1.salary > max {
+                    max = employee.1.salary;
                 }
             }
         }
     }
 
-    let mut res = Vec::new();
+    let mut highest: Vec<(&String, &Employee)> = Vec::new();
 
-    for floor in mall.floors.values() {
-        for store in &floor.stores {
-            for (name, emp) in &store.1.employees {
-                if (emp.salary - max).abs() < 0.00001 {
-                    res.push((name, emp));
+    for floor in &mall.floors {
+        for store in &floor.1.stores {
+            for (name, employee) in &store.1.employees {
+                if (employee.salary - max).abs() < 0.00001 {
+                    highest.push((name, employee));
                 }
             }
         }
     }
 
-    res
+    highest
 }
 
 pub fn nbr_of_employees(mall: &Mall) -> usize {
-    let mut count = mall.guards.len();
+    let mut number_employee: usize = mall.guards.len();
 
-    for floor in mall.floors.values() {
-        for store in floor.stores.values() {
-            count += store.employees.len();
+    for floor in &mall.floors {
+        for store in &floor.1.stores {
+            number_employee += store.1.employees.len();
         }
     }
 
-    count
+    number_employee
 }
 
 pub fn check_for_securities(mall: &mut Mall, guards: HashMap<String, Guard>) {
     let mut total = 0;
 
-    for floor in mall.floors.values() {
-        total += floor.size_limit;
+    for floor in &mall.floors {
+        total += floor.1.size_limit;
     }
 
     let needed = (total / 200) as usize;
@@ -84,13 +84,13 @@ pub fn check_for_securities(mall: &mut Mall, guards: HashMap<String, Guard>) {
 pub fn cut_or_raise(mall: &mut Mall) {
     for floor in mall.floors.values_mut() {
         for store in floor.stores.values_mut() {
-            for emp in store.employees.values_mut() {
-                let hours = emp.working_hours.1 - emp.working_hours.0;
+            for employee in store.employees.values_mut() {
+                let hours = employee.working_hours.1 - employee.working_hours.0;
 
                 if hours >= 10 {
-                    emp.salary *= 1.10;
+                    employee.salary *= 1.10;
                 } else {
-                    emp.salary *= 0.90;
+                    employee.salary *= 0.90;
                 }
             }
         }
