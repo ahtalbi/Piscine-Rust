@@ -1,6 +1,6 @@
 mod mobs;
 
-use mobs::{Boss, Member};
+pub use mobs::{Boss, Member, Role};
 use std::collections::{HashMap, HashSet};
 
 #[derive(Debug, PartialEq)]
