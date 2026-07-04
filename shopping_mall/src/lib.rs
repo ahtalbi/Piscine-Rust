@@ -65,6 +65,7 @@ pub fn nbr_of_employees(mall: &Mall) -> usize {
 
     count
 }
+
 pub fn check_for_securities(mall: &mut Mall, guards: HashMap<String, Guard>) {
     let mut total = 0;
 
@@ -74,7 +75,7 @@ pub fn check_for_securities(mall: &mut Mall, guards: HashMap<String, Guard>) {
 
     let needed = (total / 200) as usize;
 
-    let mut guards = guards; // make mutable ownership
+    let mut guards = guards;
 
     for (name, guard) in guards.drain() {
         if mall.guards.len() >= needed {
