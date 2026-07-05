@@ -7,23 +7,18 @@ enum Message {
 }
 
 fn classify_message(s: &str) -> Message {
-    // check if nothing
-    if s.is_empty() { return Message::Nothing; }
-    
-    // check if yelling
+    let is_empty = s.is_empty();
     let has_letter = s.chars().any(|c| c.is_alphabetic());
-    let is_yelling = has_letter && s.chars().all(|c| !c.is_alphabetic() || c.is_uppercase()) && !s.ends_with('?');
-    if is_yelling { return Message::Yelling; }
+    let all_upper = has_letter && s.chars().all(|c| !c.is_alphabetic() || c.is_uppercase());
+    let is_question = s.ends_with('?');
 
-    // check if he is yelling a question
-    let is_yelling_question = has_letter && s.chars().all(|c| !c.is_alphabetic() || c.is_ascii_uppercase()) && s.ends_with('?');
-    if is_yelling_question { return Message::YellingQuestion; }
-
-    // check if is asking normal
-    let is_asking = has_letter && &s[s.len()-1..s.len()] == "?";
-    if is_asking { return Message::Asking; }
-
-    Message::Interesting
+    match (is_empty, all_upper, is_question) {
+        (true, _, _) => Message::Nothing,
+        (false, true, true) => Message::YellingQuestion,
+        (false, true, false) => Message::Yelling,
+        (false, false, true) => Message::Asking,
+        _ => Message::Interesting,
+    }
 }
 
 pub fn talking(text: &str) -> &str {
