@@ -1,5 +1,5 @@
 pub fn stars(n: u32) -> String {
-    "*".repeat(2_i32.pow(n).try_into().unwrap()).to_string()
+    "*".repeat(((2 as i32).pow(n)) as usize).to_string()
 }
 
 #[cfg(test)]
