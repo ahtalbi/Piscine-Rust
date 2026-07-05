@@ -6,7 +6,8 @@ enum Message {
     Interesting,
 }
 
-fn classify_message(s: &str) -> Message {
+fn classify_message(mut s: &str) -> Message {
+    s = s.trim();
     let is_empty = s.is_empty();
     let has_letter = s.chars().any(|c| c.is_alphabetic());
     let all_upper = has_letter && s.chars().all(|c| !c.is_alphabetic() || c.is_uppercase());
@@ -53,6 +54,6 @@ mod tests {
         println!("{:?}", talking("Hello how are you?"));
         println!("{:?}", talking("WHAT'S GOING ON?"));
         println!("{:?}", talking("something"));
-        println!("{:?}", talking(""));
+        println!("{:?}", talking("\t\t\t\t"));
     }
 }
