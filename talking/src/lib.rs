@@ -12,15 +12,15 @@ fn classify_message(s: &str) -> Message {
     
     // check if yelling
     let has_letter = s.chars().any(|c| c.is_alphabetic());
-    let is_yaelling = has_letter && s.chars().all(|c| !c.is_alphabetic() || c.is_uppercase()) && !s.ends_with('?');
+    let is_yelling = has_letter && s.chars().all(|c| !c.is_alphabetic() || c.is_uppercase()) && !s.ends_with('?');
     if is_yelling { return Message::Yelling; }
 
     // check if he is yelling a question
-    let is_yelling_question = s.chars().all(|c| !c.is_alphabetic() || c.is_ascii_uppercase()) && s.ends_with('?');
+    let is_yelling_question = has_letter && s.chars().all(|c| !c.is_alphabetic() || c.is_ascii_uppercase()) && s.ends_with('?');
     if is_yelling_question { return Message::YellingQuestion; }
 
     // check if is asking normal
-    let is_asking = &s[s.len()-1..s.len()] == "?";
+    let is_asking = has_letter && &s[s.len()-1..s.len()] == "?";
     if is_asking { return Message::Asking; }
 
     Message::Interesting
