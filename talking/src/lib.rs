@@ -22,6 +22,7 @@ fn classify_message(s: &str) -> Message {
 }
 
 pub fn talking(text: &str) -> &str {
+    println!("{:?}", text);
     let classified : Message = classify_message(&text);
     match classified {
         Message::Nothing => {
