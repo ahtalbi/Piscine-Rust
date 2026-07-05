@@ -1,28 +1,26 @@
 pub fn pig_latin(text: &str) -> String {
-    let vowels = ['a', 'e', 'i', 'o', 'u'];
-    let chars: Vec<char> = text.chars().collect();
+    let arr: Vec<char> = text.chars().collect();
+    let vowels = "aeiou";
 
-    if vowels.contains(&chars[0]) {
+    if vowels.contains(arr[0]) {
         return format!("{}ay", text);
     }
 
-    let mut i = 0;
-
-    while i < chars.len() {
-        if chars[i] == 'q' && i + 1 < chars.len() && chars[i + 1] == 'u' {
-            i += 2;
-            continue;
-        }
-
-        if vowels.contains(&chars[i]) {
-            break;
-        }
-
-        i += 1;
+    if arr.len() >= 3 && !vowels.contains(arr[0]) && arr[1] == 'q' && arr[2] == 'u' {
+        let rest: String = arr[3..].iter().collect();
+        let head: String = arr[..3].iter().collect();
+        return format!("{}{}ay", rest, head);
     }
 
-    let (head, tail) = text.split_at(i);
-    format!("{}{}ay", tail, head)
+    for (i, _) in arr.iter().enumerate() {
+        if i != 0 && vowels.contains(arr[i]) {
+            let first: String = arr[i..].iter().collect();
+            let last: String = arr[..i].iter().collect();
+            return format!("{}{}ay", first, last);
+        }
+    }
+
+    format!("{}", text)
 }
 
 #[cfg(test)]
