@@ -2,6 +2,7 @@
 pub fn rotate(input: &str, key: i8) -> String {
     let mut res : String = String::new();
     let v : Vec<char> = ('a'..='z').collect();
+
     for (i, c) in input.chars().enumerate() {
         if c.is_alphabetic() {
             let diff = if c.is_uppercase() {
@@ -15,6 +16,7 @@ pub fn rotate(input: &str, key: i8) -> String {
             } else {
                 v[((diff + (key as i32)).rem_euclid(26)) as usize].to_ascii_uppercase()
             };
+
             res.push(chr);
         } else {
             res.push(c);
