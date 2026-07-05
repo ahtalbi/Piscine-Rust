@@ -23,24 +23,13 @@ fn classify_message(s: &str) -> Message {
 }
 
 pub fn talking(text: &str) -> &str {
-    println!("{:?}", text);
-    let classified : Message = classify_message(&text);
+    let classified : Message = classify_message(text);
     match classified {
-        Message::Nothing => {
-            "Just say something!"
-        },
-        Message::Yelling => {
-            "There is no need to yell, calm down!"
-        },
-        Message::Asking => {
-            "Sure."
-        },
-        Message::YellingQuestion => {
-            "Quiet, I am thinking!"
-        },
-        Message::Interesting => {
-            "Interesting"
-        },
+        Message::Nothing => "Just say something!",
+        Message::Yelling => "There is no need to yell, calm down!",
+        Message::Asking => "Sure.",
+        Message::YellingQuestion => "Quiet, I am thinking!",
+        Message::Interesting => "Interesting",
     }
 }
 
