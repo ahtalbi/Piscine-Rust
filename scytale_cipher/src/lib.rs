@@ -1,29 +1,27 @@
-pub fn scytale_cipher(message: &str, i: usize) -> String {
-    let chars: Vec<char> = message.chars().collect();
-    let len = chars.len();
-    let rows = (len + i - 1) / i;
-    let mut grid: Vec<Vec<char>> = vec![vec![' '; i]; rows];
+pub fn scytale_cipher(message: &str, i: u32) -> String {
+    if i <= 1 || message.is_empty() {
+        return message.to_string();
+    }
 
-    let mut k = 0;
-    for r in 0..rows {
-        for c in 0..i {
-            if k < len {
-                grid[r][c] = chars[k];
-                k += 1;
+    let mut s = String::new();
+    let m: Vec<u8> = message.bytes().collect();
+    let l: usize = m.len();
+
+    let cols: usize = ((l as f64) / (i as f64)).ceil() as usize;
+    let row: usize = i as usize;
+
+    for i in 0..row {
+        for col in 0..cols {
+            if i + row * col < l {
+                s.push(m[i + row * col] as char);
+            } else {
+                s.push(' ');
             }
         }
     }
 
-    let mut result = String::new();
-    for c in 0..i {
-        for r in 0..rows {
-            if grid[r][c] != ' ' {
-                result.push(grid[r][c]);
-            }
-        }
-    }
-
-    result
+    let s = s.trim_end_matches(' ').to_string();
+    s
 }
 
 #[cfg(test)]
