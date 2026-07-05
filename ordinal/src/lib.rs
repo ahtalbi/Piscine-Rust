@@ -2,7 +2,7 @@ pub fn num_to_ordinal(x: u32) -> String {
     let s = x.to_string();
     if s.len() == 0 {return "".to_string();}
     // handle exeptions
-    if s.len() == 2 && &s[0..1] == "1" {
+    if s.len() >= 2 && &s[0..1] == "1" {
         return format!("{}th", s);
     }
     // handle all
