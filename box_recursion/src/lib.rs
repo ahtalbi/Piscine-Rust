@@ -77,6 +77,7 @@ impl WorkEnvironment {
     }
 
     pub fn last_worker(&self) -> Option<(String, Role)> {
+        println!("{:#?}", &self);
         let mut c = &self.grade;
         while let Some(worker) = c {
             if worker.next == None {
