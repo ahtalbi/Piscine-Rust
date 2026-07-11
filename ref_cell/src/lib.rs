@@ -19,21 +19,21 @@ impl Tracker {
 
     pub fn set_value(&self, value: &Rc<usize>) {
         let refs = Rc::strong_count(value);
+        let p = refs * 100 / self.max;
         *self.value.borrow_mut() = refs;
         if refs > self.max {
             self.messages.borrow_mut().push("Error: You can't go over your quota!".to_string());
-        } else if refs >= self.max * 70 / 100 {
-            self.messages.borrow_mut().push("Warning: You have used up over 70% of your quota!".to_string());
+        } else if p >= 70 {
+            self.messages.borrow_mut().push(format!("Warning: You have used up over {}% of your quota!", p));
         }
     }
-
+    
     pub fn peek(&self, value: &Rc<usize>) {
         let refs = Rc::strong_count(value);
         let p = refs * 100 / self.max;
         self.messages.borrow_mut().push(format!("Info: This value would use {}% of your quota", p));
     }
 }
-
 #[cfg(test)]
 mod tests {
     use super::*;
