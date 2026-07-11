@@ -19,7 +19,7 @@ impl Node {
         let mut i = 0;
         while i < self.ref_list.len() {
             let ele = &self.ref_list[i as usize];
-            if *ele == element {
+            if Rc::ptr_eq(ele, &element) {
                 self.ref_list.remove(i);
                 continue;
             }
