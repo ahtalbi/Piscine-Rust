@@ -37,55 +37,24 @@ impl WorkEnvironment {
     }
 
     pub fn add_worker(&mut self, name: &str, role: &str) {
-        let mut c = &mut self.grade;
-        if c.is_none() {*c = Some(Box::new(Worker {
+        self.grade = Some(Box::new(Worker {
             role: Role::from(role),
             name: name.to_string(),
-            next: None,
+            next: self.grade.take(),
         }));
-        return;}
-        while let Some(worker) = c {
-            if worker.next == None {
-                worker.next = Some(Box::new(Worker {
-                    role: Role::from(role),
-                    name: name.to_string(),
-                    next: None,
-                }));
-                break;
-            }
-        
-            c = &mut worker.next;
-        }
-    }
-
-    pub fn remove_worker(&mut self) -> Option<String> {
-        let mut c = &mut self.grade;
-        let mut name : String = String::new();
-        loop {
-            if c.is_none() {
-                break;
-            }
-            if c.as_ref().unwrap().next.is_none() {
-                name = c.as_ref().unwrap().name.clone();
-                break;
-            }
-        
-            c = &mut c.as_mut().unwrap().next;
-        }
-        *c = None;
-        Some("".to_string())
     }
 
     pub fn last_worker(&self) -> Option<(String, Role)> {
-        println!("{:#?}", &self);
-        let mut c = &self.grade;
-        while let Some(worker) = c {
-            if worker.next == None {
-                return Some((worker.name.clone(), worker.role.clone()));
-            }
-            c = &worker.next;
+        match &self.grade {
+            Some(w) => Some((w.name.clone(), w.role.clone())),
+            None => None,
         }
-        None
+    }
+
+    pub fn remove_worker(&mut self) -> Option<(String, Role)> {
+        let f = self.grade.take()?;
+        self.grade = f.next;
+        Some((f.name, f.role))
     }
 }
 
