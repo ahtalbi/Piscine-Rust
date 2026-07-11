@@ -27,7 +27,7 @@ impl Tracker {
         }
     }
 
-    fn peek(&self, value: &Rc<usize>) {
+    pub fn peek(&self, value: &Rc<usize>) {
         let refs = Rc::strong_count(value);
         let p = refs * 100 / self.max;
         self.messages.borrow_mut().push(format!("Info: This value would use {}% of your quota", p));
