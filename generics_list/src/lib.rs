@@ -9,7 +9,7 @@ pub struct Node<T> {
     pub next: Option<Box<Node<T>>>,
 }
 
-impl<T> List<T> {
+impl<T: std::clone::Clone> List<T> {
     pub fn new() -> Self {
         Self {
             head: None,
@@ -17,41 +17,19 @@ impl<T> List<T> {
     }
 
     pub fn push(&mut self, value: T) {
-        if self.head.is_none() {
-            self.head = Some(Node{value: value, next: None});
-            return;
-        }
-        let mut c = self.head.as_mut();
-        loop {
-            match c {
-                Some(node) => {
-                    if node.next.is_none() {
-                        node.next = Some(Box::new(Node {
-                            value,
-                            next: None,
-                        }));
-                        break;
-                    }
-                
-                    c = node.next.as_deref_mut();
-                }
-                None => break,
-            }
-        }
+        let h : Option<Node<T>> = self.head.take();
+        self.head = Some(Node{
+            value: value,
+            next: h.map(Box::new),
+        });
     }
 
     pub fn pop(&mut self) {
-        match self.head.as_mut() {
-            None => return,
-            Some(head) if head.next.is_none() => {
+        if let Some(node) = self.head.take() {
+            if let Some(next) = node.next {
+                self.head = Some(*next);
+            } else {
                 self.head = None;
-            },
-            Some(_) => {
-                let mut c = self.head.as_mut().unwrap();
-                while c.next.as_ref().unwrap().next.is_some() {
-                    c = c.next.as_mut().unwrap();
-                }
-                c.next = None;
             }
         }
     }
@@ -59,17 +37,9 @@ impl<T> List<T> {
     pub fn len(&self) -> usize {
         let mut res : usize = 0;
         let mut c = self.head.as_ref();
-        loop {
-            match c {
-                Some(node) => {
-                    res += 1;
-                    if node.next.is_none() {
-                        break;
-                    }
-                    c = node.next.as_deref();
-                },
-                None => break,
-            }
+        while let Some(node) = c {
+            res += 1;
+            c = c.unwrap().next.as_deref();
         }
         res
     }
@@ -83,6 +53,7 @@ mod tests {
     fn it_works() {
         let mut new_list_str = List::new();
         new_list_str.push("String Test 1");
+        println!("{:?}", new_list_str);
         println!("The size of the list is {}", new_list_str.len());
 
         new_list_str.push("String Test 2");
