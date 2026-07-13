@@ -28,7 +28,7 @@ impl fmt::Display for Player<'_> {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		writeln!(f, "{}", self.name);
 		writeln!(f, "Strength: {}, Score: {}, Money: {}", self.strength, self.score, self.money);
-		writeln!(f, "Weapons: {:?}", self.weapons);
+		write!(f, "Weapons: {:?}", self.weapons);
         Ok(())
     }
 }
@@ -45,7 +45,7 @@ impl Food for Fruit {
 
 impl Food for Meat {
 	fn gives(&self) -> f64 {
-        let mut fat = self.fat_content * self.weight_in_kg;
+        let fat = self.fat_content * self.weight_in_kg;
 		let protein = self.weight_in_kg - fat;
         protein * 4.0 + fat * 9.0
 	}
