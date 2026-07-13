@@ -1,6 +1,6 @@
-use std::str::FromStr;
+use std::{fmt, str::FromStr};
 
-#[derive(Debug, PartialEq, Eq, Clone, PartialOrd, Ord)]
+#[derive(PartialEq, Eq, Hash, Clone, Copy)]
 pub enum Antigen {
     A,
     AB,
@@ -8,133 +8,135 @@ pub enum Antigen {
     O,
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
+#[derive(PartialEq, Eq, Hash, Clone, Copy)]
 pub enum RhFactor {
     Positive,
     Negative,
 }
 
-#[derive(Clone, PartialEq, Eq, PartialOrd)]
+#[derive(PartialEq, Eq, Hash, Clone, Copy)]
 pub struct BloodType {
     pub antigen: Antigen,
     pub rh_factor: RhFactor,
 }
 
-use std::cmp::{ Ord, Ordering };
-
-impl FromStr for Antigen {
-    type Err = String;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "A" => Ok(Antigen::A),
-            "AB" => Ok(Antigen::AB),
-            "B" => Ok(Antigen::B),
-            "O" => Ok(Antigen::O), // not Ordering
-            _ => Err("Invalid antigen type".to_string()),
-        }
-    }
-}
-
-impl FromStr for RhFactor {
-    type Err = String;
-
-    fn from_str(s: &str) -> Result<RhFactor, Self::Err> {
-        match s {
-            "-" => Ok(RhFactor::Negative),
-            "+" => Ok(RhFactor::Positive),
-            _ => Err("Invalid type".to_string()),
-        }
-    }
-}
-
-impl Ord for BloodType {
-    fn cmp(&self, other: &Self) -> Ordering {
-        let antigen_order = self.antigen.cmp(&other.antigen);
-        if antigen_order != Ordering::Equal {
-            return antigen_order;
-        }
-
-        self.rh_factor.cmp(&other.rh_factor)
-    }
-}
 
 impl FromStr for BloodType {
-    type Err = String;
+    type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "O-" => Ok(BloodType { antigen: Antigen::O, rh_factor: RhFactor::Negative }),
-            "O+" => Ok(BloodType { antigen: Antigen::O, rh_factor: RhFactor::Positive }),
-            "A-" => Ok(BloodType { antigen: Antigen::A, rh_factor: RhFactor::Negative }),
-            "A+" => Ok(BloodType { antigen: Antigen::A, rh_factor: RhFactor::Positive }),
-            "B-" => Ok(BloodType { antigen: Antigen::B, rh_factor: RhFactor::Negative }),
-            "B+" => Ok(BloodType { antigen: Antigen::B, rh_factor: RhFactor::Positive }),
-            "AB-" => Ok(BloodType { antigen: Antigen::AB, rh_factor: RhFactor::Negative }),
-            "AB+" => Ok(BloodType { antigen: Antigen::AB, rh_factor: RhFactor::Positive }),
-            _ => Err("Invalid blood type".to_string()),
+            "A+" => Ok(BloodType {
+                antigen: Antigen::A,
+                rh_factor: RhFactor::Positive,
+            }),
+            "A-" => Ok(BloodType {
+                antigen: Antigen::A,
+                rh_factor: RhFactor::Negative,
+            }),
+            "B+" => Ok(BloodType {
+                antigen: Antigen::B,
+                rh_factor: RhFactor::Positive,
+            }),
+            "B-" => Ok(BloodType {
+                antigen: Antigen::B,
+                rh_factor: RhFactor::Negative,
+            }),
+            "AB+" => Ok(BloodType {
+                antigen: Antigen::AB,
+                rh_factor: RhFactor::Positive,
+            }),
+            "AB-" => Ok(BloodType {
+                antigen: Antigen::AB,
+                rh_factor: RhFactor::Negative,
+            }),
+            "O+" => Ok(BloodType {
+                antigen: Antigen::O,
+                rh_factor: RhFactor::Positive,
+            }),
+            "O-" => Ok(BloodType {
+                antigen: Antigen::O,
+                rh_factor: RhFactor::Negative,
+            }),
+            _ => Err(()),
         }
     }
 }
-use std::fmt::Formatter;
-use std::fmt::{ self, Debug };
 
-impl Debug for BloodType {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let mut s: String = String::new();
-        s.push_str(match self.antigen {
-            Antigen::AB => "AB",
-            Antigen::B => "B",
+
+impl fmt::Debug for BloodType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let antigen = match self.antigen {
             Antigen::A => "A",
+            Antigen::B => "B",
+            Antigen::AB => "AB",
             Antigen::O => "O",
-        });
-        s.push(match self.rh_factor {
-            RhFactor::Positive => '+',
-            RhFactor::Negative => '-',
-        });
-        write!(f, "{}", s)
+        };
+
+        let rh = match self.rh_factor {
+            RhFactor::Positive => "+",
+            RhFactor::Negative => "-",
+        };
+
+        write!(f, "{}{}", antigen, rh)
     }
 }
-
-const ORDERED_BLOOD: [BloodType; 8] = [
-    BloodType { antigen: Antigen::AB, rh_factor: RhFactor::Positive },
-    BloodType { antigen: Antigen::AB, rh_factor: RhFactor::Negative },
-    BloodType { antigen: Antigen::O, rh_factor: RhFactor::Positive },
-    BloodType { antigen: Antigen::O, rh_factor: RhFactor::Negative },
-    BloodType { antigen: Antigen::A, rh_factor: RhFactor::Positive },
-    BloodType { antigen: Antigen::A, rh_factor: RhFactor::Negative },
-    BloodType { antigen: Antigen::B, rh_factor: RhFactor::Positive },
-    BloodType { antigen: Antigen::B, rh_factor: RhFactor::Negative },
-];
 
 impl BloodType {
-    pub fn can_receive_from(&self, other: &Self) -> bool {
-        if self.rh_factor == RhFactor::Negative && other.rh_factor == RhFactor::Positive {
-            return false;
-        }
-
-        match self.antigen {
+    pub fn can_receive_from(self, other: Self) -> bool {
+        let antigen_ok = match self.antigen {
             Antigen::O => other.antigen == Antigen::O,
+
             Antigen::A => other.antigen == Antigen::A || other.antigen == Antigen::O,
+
             Antigen::B => other.antigen == Antigen::B || other.antigen == Antigen::O,
+
             Antigen::AB => true,
-        }
+        };
+
+        let rh_ok = match self.rh_factor {
+            RhFactor::Positive => true,
+            RhFactor::Negative => other.rh_factor == RhFactor::Negative,
+        };
+
+        antigen_ok && rh_ok
     }
 
-    pub fn donors(&self) -> Vec<Self> {
-        ORDERED_BLOOD.iter()
-            .cloned()
-            .filter(|donor| self.can_receive_from(donor))
+    pub fn donors(self) -> Vec<Self> {
+        let all = vec![
+            "A+".parse().unwrap(),
+            "A-".parse().unwrap(),
+            "B+".parse().unwrap(),
+            "B-".parse().unwrap(),
+            "AB+".parse().unwrap(),
+            "AB-".parse().unwrap(),
+            "O+".parse().unwrap(),
+            "O-".parse().unwrap(),
+        ];
+
+        all.into_iter()
+            .filter(|b| self.can_receive_from(*b))
             .collect()
     }
 
-    pub fn recipients(&self) -> Vec<Self> {
-        ORDERED_BLOOD.iter()
-            .cloned()
-            .filter(|recipient| recipient.can_receive_from(self))
+    pub fn recipients(self) -> Vec<Self> {
+        let all: Vec<BloodType> = vec![
+            "A+".parse().unwrap(),
+            "A-".parse().unwrap(),
+            "B+".parse().unwrap(),
+            "B-".parse().unwrap(),
+            "AB+".parse().unwrap(),
+            "AB-".parse().unwrap(),
+            "O+".parse().unwrap(),
+            "O-".parse().unwrap(),
+        ];
+
+        all.into_iter()
+            .filter(|b| b.can_receive_from(self))
             .collect()
     }
 }
+
 
 #[cfg(test)]
 mod tests {
@@ -142,7 +144,7 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let blood_type = "O+".parse::<BloodType>().unwrap();
+	    let blood_type = "O+".parse::<BloodType>().unwrap();
 	    println!("recipients of O+ {:?}", blood_type.recipients());
 	    println!("donors of O+ {:?}", blood_type.donors());
 
@@ -150,7 +152,7 @@ mod tests {
 	    println!(
 	    	"donors of O+ can receive from {:?} {:?}",
 	    	another_blood_type,
-	    	blood_type.can_receive_from(&another_blood_type)
+	    	blood_type.can_receive_from(another_blood_type)
 	    );
     }
 }
