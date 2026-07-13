@@ -1,4 +1,4 @@
-use std::ops::{Add, Sub, Mul, Div};
+use std::ops::{Add, Mul};
 
 #[derive(Debug, PartialEq)]
 pub struct Vector<T: Scalar>(pub Vec<T>);
