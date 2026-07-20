@@ -1,24 +1,9 @@
-fn have_multiplayer(n: i32) -> bool {
-    let mut i = 2;
-    while i * i <= n {
-        if i * i == n {
-            return true;
-        }
-        i += 1;
-    }
-    false
-}
-
 fn first_fifty_even_square() -> Vec<i32> {
-    let mut res : Vec<i32> = Vec::new();
-    let mut i = 4;
-    while res.len() < 50 {
-        if have_multiplayer(i) {
-            res.push(i);
-        }
-        i += 2;
-    }
-    res
+    (2..)
+        .step_by(2)
+        .map(|n| n * n)
+        .take(50)
+        .collect()
 }
 
 #[cfg(test)]
