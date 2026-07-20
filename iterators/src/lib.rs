@@ -1,5 +1,5 @@
 pub struct Collatz {
-    v: u64,
+    pub v: u64,
 }
 
 impl Collatz {
