@@ -15,76 +15,102 @@ pub enum RomanDigit {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct RomanNumber(pub Vec<RomanDigit>);
 
+impl From<u32> for RomanDigit {
+    fn from(n: u32) -> Self {
+        match n {
+            1 => RomanDigit::I,
+            5 => RomanDigit::V,
+            10 => RomanDigit::X,
+            50 => RomanDigit::L,
+            100 => RomanDigit::C,
+            500 => RomanDigit::D,
+            1000 => RomanDigit::M,
+            _ => RomanDigit::Nulla,
+        }
+    }
+}
+
 impl From<u32> for RomanNumber {
-    fn from(mut value: u32) -> Self {
-        if value == 0 {
-            return RomanNumber(vec![Nulla]);
+    fn from(mut n: u32) -> Self {
+        if n == 0 || n >= 50000 {
+            return RomanNumber(vec![RomanDigit::Nulla]);
         }
 
-        let nums = [
-            1000, 900, 500, 400,
-            100, 90, 50, 40,
-            10, 9, 5, 4, 1,
+        let roman: Vec<(u32, [RomanDigit; 2])> = vec![
+            (1000, [M, Nulla]),
+            (900, [C, M]),
+            (500, [D, Nulla]),
+            (400, [C, D]),
+            (100, [C, Nulla]),
+            (90, [X, C]),
+            (50, [L, Nulla]),
+            (40, [X, L]),
+            (10, [X, Nulla]),
+            (9, [I, X]),
+            (5, [V, Nulla]),
+            (4, [I, V]),
+            (1, [I, Nulla])
         ];
 
-        let romans = [
-            vec![M], vec![C, M], vec![D], vec![C, D],
-            vec![C], vec![X, C], vec![L], vec![X, L],
-            vec![X], vec![I, X], vec![V], vec![I, V], vec![I],
-        ];
+        let mut result = Vec::new();
 
-        let mut res = Vec::new();
-
-        for i in 0..nums.len() {
-            while value >= nums[i] {
-                for d in &romans[i] {
-                    res.push(*d);
+        for (value, digits) in roman.iter() {
+            while n >= *value {
+                n -= *value;
+                result.push(digits[0]);
+                if digits[1] != Nulla {
+                    result.push(digits[1]);
                 }
-                value -= nums[i];
             }
         }
 
-        RomanNumber(res)
+        RomanNumber(result)
     }
 }
-
-fn dval(d: &RomanDigit) -> u32 {
-    match d {
-        Nulla => 0,
-        I => 1,
-        V => 5,
-        X => 10,
-        L => 50,
-        C => 100,
-        D => 500,
-        M => 1000,
-    }
-}
-
-fn to_val(n: &RomanNumber) -> u32 {
-    let d = &n.0;
-    let mut sum = 0;
-    for i in 0..d.len() {
-        let cur = dval(&d[i]);
-        let nxt = d.get(i + 1).map(dval).unwrap_or(0);
-        if cur < nxt {
-            sum -= cur;
-        } else {
-            sum += cur;
-        }
-    }
-    sum
-}
-
 impl Iterator for RomanNumber {
     type Item = RomanNumber;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let val = to_val(self) + 1;
-        let res = RomanNumber::from(val);
-        *self = res.clone();
-        Some(res)
+        let a = roman_digits_to_number(&self.0) + 1;
+        if a >= 50000 {
+            return None;
+        }
+        let next = RomanNumber::from(a);
+        Some(next)
     }
+}
+
+fn roman_digits_to_number(digits: &[RomanDigit]) -> u32 {
+    fn value(d: RomanDigit) -> u32 {
+        match d {
+            RomanDigit::I => 1,
+            RomanDigit::V => 5,
+            RomanDigit::X => 10,
+            RomanDigit::L => 50,
+            RomanDigit::C => 100,
+            RomanDigit::D => 500,
+            RomanDigit::M => 1000,
+            _ => 0,
+        }
+    }
+
+    let mut total = 0;
+    let mut i = 0;
+
+    while i < digits.len() {
+        let current = value(digits[i]);
+        let next = if i + 1 < digits.len() { value(digits[i + 1]) } else { 0 };
+
+        if current < next {
+            total += next - current;
+            i += 2;
+        } else {
+            total += current;
+            i += 1;
+        }
+    }
+
+    total
 }
 
 #[cfg(test)]
