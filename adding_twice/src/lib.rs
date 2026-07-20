@@ -1,4 +1,4 @@
-use adding::add_curry;
+pub use adding::add_curry;
 
 pub fn twice(f: impl Fn(i64) -> i64) -> impl Fn(i64) -> i64 {
     move |c| f(f(c))
