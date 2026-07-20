@@ -1,3 +1,4 @@
+#[derive(Copy, Clone)]
 pub struct Collatz {
     pub v: u64,
 }
@@ -9,7 +10,7 @@ impl Collatz {
 }
 
 impl Iterator for Collatz {
-    type Item = u64;
+    type Item = Collatz;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.v <= 1 {
@@ -21,7 +22,7 @@ impl Iterator for Collatz {
         } else {
             cr * 3 + 1
         };
-        Some(cr)
+        Some(Collatz { v: cr })
     }
 }
 
