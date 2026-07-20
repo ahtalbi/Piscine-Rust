@@ -1,15 +1,15 @@
 pub fn get_products(arr: Vec<usize>) -> Vec<usize> {
-    if arr.len() == 1 {
-        return arr;
+    if arr.len() <= 1 {
+        return Vec::new();
     }
     let mut res = Vec::new();
-    
+
     for i in 0..arr.len() {
         let mut tmp = arr.clone();
         tmp[i] = 1;
         res.push(tmp.iter().product());
     }
-    
+
     res
 }
 
