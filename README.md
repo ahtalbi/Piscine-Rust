@@ -73,4 +73,4 @@ To run tests or build any of the individual exercise solutions:
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/ahtalbi/Piscine-Rust.git
-   cd YOUR_REPO_NAME
+   cd Piscine-Rust
