@@ -11,7 +11,7 @@ impl<T> StepIterator<T> {
     }
 }
 
-impl<T: Add<Output = T> + Copy> std::iter::Iterator for StepIterator<T> {
+impl<T: Add<Output = T> + PartialOrd + Copy> std::iter::Iterator for StepIterator<T> {
     type Item = T;
     fn next(&mut self) -> Option<Self::Item> {
         let current = self.beg;
